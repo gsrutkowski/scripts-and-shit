@@ -1,0 +1,79 @@
+##Periodic Execution of AIDE
+echo "05 4 * * * root /usr/sbin/aide --check" >> /etc/crontab
+
+## No Empty Passwords
+echo "PermitEmptyPasswords no" >> /etc/ssh/sshd_config
+
+space_left_action = email
+admin_space_left_action = single
+space_left = 100
+disk_full_action = syslog
+disk_error_action = syslog
+
+sed -i 's/^:INPUT ACCEPT.*/:INPUT DROP [0:0]/g' /etc/sysconfig/iptables
+sed -i 's/^:FORWARD ACCEPT.*/:FORWARD DROP [0:0]/g' /etc/sysconfig/iptables
+sed -i 's/^:INPUT ACCEPT.*/:INPUT DROP [0:0]/g' /etc/sysconfig/ip6tables
+sed -i 's/umask.*/umask 077/g' /etc/profile
+sed -i 's/crypt_style =.*/crypt_style = sha512/g' /etc/libuser.conf
+sed -i 's/ENCRYPT_METHOD.*/ENCRYPT_METHOD SHA512/g' /etc/login.defs
+sed -i 's/umask.*/umask 027/g' /etc/init.d/functions
+sed -i 's/kernel\(.*\)quiet/kernel\1quiet audit=1/g' /boot/grub/grub.conf
+
+/sbin/sysctl -q -n -w net.ipv6.conf.default.accept_redirects=0
+/sbin/sysctl -q -n -w net.ipv6.conf.all.disable_ipv6=1
+/sbin/sysctl -q -n -w net.ipv6.conf.default.disable_ipv6=1
+/sbin/sysctl -q -n -w net.ipv4.conf.default.send_redirects=0
+/sbin/sysctl -q -n -w net.ipv4.conf.all.send_redirects=0
+/sbin/sysctl -q -n -w net.ipv4.conf.all.accept_source_route=0
+/sbin/sysctl -q -n -w net.ipv4.conf.all.secure_redirection=0
+/sbin/sysctl -q -n -w net.ipv4.conf.all.log_martians=1
+/sbin/sysctl -q -n -w net.ipv4.conf.default.secure_redirects=0
+/sbin/sysctl -q -n -w net.ipv4.icmp_ignore_bogus_error_responses=1
+/sbin/sysctl -q -n -w net.ipv4.conf.all.rp_filter=1
+/sbin/sysctl -q -n -w kernel.exec-shield=1
+
+echo "SINGLE=/sbin/sulogin" >> /etc/sysconfig/init
+ 
+
+-a always,exit -F arch=b32 -S chmod -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S chown -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S fchmod -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S fchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S fchownat -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S fsetxattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S lremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S lsetxattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S removexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S setxattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access
+-a always,exit -F arch=b32 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access
+-a always,exit -F arch=b32 -S mount -F auid>=500 -F auid!=4294967295 -k export
+-a always,exit -F arch=b32 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
+
+
+-a always,exit -F arch=b64 -S chmod  -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S chown -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S fchmod -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S fchmodat -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S fchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S fchownat -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S fremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S fsetxattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S lchown -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S lremovexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S lsetxattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S removexattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S setxattr -F auid>=500 -F auid!=4294967295 -k perm_mod
+-a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EACCES -F auid>=500 -F auid!=4294967295 -k access
+-a always,exit -F arch=b64 -S creat -S open -S openat -S open_by_handle_at -S truncate -S ftruncate -F exit=-EPERM -F auid>=500 -F auid!=4294967295 -k access
+-a always,exit -F arch=b64 -S mount -F auid>=500 -F auid!=4294967295 -k export
+-a always,exit -F arch=b64 -S rmdir -S unlink -S unlinkat -S rename -S renameat -F auid>=500 -F auid!=4294967295 -k delete
+
+
+chkconfig --level 2345 ntpd on
+
+
+
