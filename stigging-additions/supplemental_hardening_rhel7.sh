@@ -562,11 +562,11 @@ do
 done
 
 ########################################
-# RSYSLOG data to Logger
+# RSYSLOG data to RSYSLOG Server
 ########################################
-cat << EOF >> /etc/rsyslog.conf
-*.*             @@logger.chs.spawar.navy.mil:514
-EOF
+#cat << EOF >> /etc/rsyslog.conf
+#*.*             @@server.example.com:514
+#EOF
 
 
 ########################################
